@@ -10,7 +10,7 @@ public class Flight {
 	private String locationFrom;
 	private String locationTo;
 	private String ticketConfirmation;
-	
+	private int seatnumber;
 	
 	public Flight() {
 		
@@ -20,12 +20,23 @@ public class Flight {
 		setLocationFrom("");
 		locationTo  = "";
 		ticketConfirmation = "";
-		
+		seatnumber = 0;
 	}
+	public void setSeatNumber(int seatnum) {
+		this.seatnumber = seatnum;
+	}
+	public int getSeatNum() {
+		return seatnumber;
+	}
+	
 	
 	public void setTickets(int tickets) {
 		this.tickets = tickets;
 		listOfPassenger = new String[tickets];
+		
+		for(int i = 0 ; i < listOfPassenger.length ; i++) {
+			listOfPassenger[i] = "";
+		}
 	}
 	public int getTickets() {
 		
@@ -45,21 +56,35 @@ public class Flight {
 		
 	}
 	
+	public int returnSeatNum(String name) {
+		for(int i = 0; i < listOfPassenger.length; i++) {
+			if(listOfPassenger[i].equalsIgnoreCase(name)) {
+				return i+1;
+			}
+		}
+		return 0;
+	}
 	
+	public void printList() {
+		for( String passenger: listOfPassenger) {
+			System.out.println(passenger);
+		}
+	}
 	public void addPassenger(Passenger passenger){
-		
+		int seatNum = 0;
 		
 		try {
 			airplaneFull();
 			
-			int seatNum = 0;
+			
 			
 			for(int i = 0; i < listOfPassenger.length; i++) {
 				if(listOfPassenger[i] == "") {
 					listOfPassenger[i] = passenger.getName();
-					
-					System.out.println("The seat number: "+ seatNum);
 					seatNum = i+1;
+					break;
+					//System.out.println("The seat number: "+ getSeatNum());
+					
 				}
 			}
 			
@@ -94,7 +119,7 @@ public class Flight {
 	public boolean passengerExists(String passengerName) {
 		
 		for(String passenger: listOfPassenger) {
-			if(passenger.equalsIgnoreCase(passengerName.trim())) {
+			if(passenger.equalsIgnoreCase(passengerName)) {
 				return true;
 			}
 		}
@@ -108,7 +133,7 @@ public class Flight {
 			
 			for(String passenger: listOfPassenger) {
 				if(passenger.equalsIgnoreCase(passengerName.trim())){
-					passenger = null;
+					passenger = "";
 					
 				}
 				
