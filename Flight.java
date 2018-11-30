@@ -1,3 +1,6 @@
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Random;
 
 public class Flight {
 
@@ -11,6 +14,9 @@ public class Flight {
 	private String locationTo;
 	private String ticketConfirmation;
 	private int seatnumber;
+	private HashSet<String> passengerList;
+	HashSet<Integer> seatNumbers;
+	private HashMap<Integer, String> map;
 	
 	public Flight() {
 		
@@ -21,6 +27,9 @@ public class Flight {
 		locationTo  = "";
 		ticketConfirmation = "";
 		seatnumber = 0;
+		passengerList = new HashSet<String>();
+		seatNumbers = new HashSet<Integer>();
+		map = new HashMap();
 	}
 	public void setSeatNumber(int seatnum) {
 		this.seatnumber = seatnum;
@@ -66,31 +75,35 @@ public class Flight {
 	}
 	
 	public void printList() {
-		for( String passenger: listOfPassenger) {
+		for(String passenger: passengerList) {
 			System.out.println(passenger);
 		}
 	}
-	public void addPassenger(Passenger passenger){
+	public void addPassenger(String passenger){
 		int seatNum = 0;
+		
+		Random seat = new Random();
+		//n1 + (Math.random() * (n2 - n1));
+		
+		seatNum = (int) (1+(Math.random()*(this.getTickets() - 1)));
+		
+		String dummyName = passenger.toLowerCase();
+		
+		while(map.containsKey(seatNum)) {
+			seatNum = (int) (1+(Math.random()*(this.getTickets() - 1)));
+		}
+		map.put(seatNum, dummyName);
 		
 		try {
 			airplaneFull();
 			
 			
 			
-			for(int i = 0; i < listOfPassenger.length; i++) {
-				if(listOfPassenger[i] == "") {
-					listOfPassenger[i] = passenger.getName();
-					seatNum = i+1;
-					break;
-					//System.out.println("The seat number: "+ getSeatNum());
-					
-				}
-			}
+			passengerList.add(dummyName);
 			
 			tickets--;
 			
-			System.out.println("\n FLIGHT BOOKED! Confirmation for: "+ passenger.getName() + "\nFor Greensboro to Newark flight Departing at: "+ this.getFlightTime()+
+			System.out.println("\n FLIGHT BOOKED! Confirmation for: "+ passenger + "\nFor Greensboro to Newark flight Departing at: "+ this.getFlightTime()+
 						" Seat number: " + seatNum + " Date: "+ this.getFlightDate());
 			
 		}catch(allTicketSoldError e) {
@@ -118,26 +131,21 @@ public class Flight {
 	//Checks to see if the passenger exists on the flight
 	public boolean passengerExists(String passengerName) {
 		
-		for(String passenger: listOfPassenger) {
-			if(passenger.equalsIgnoreCase(passengerName)) {
-				return true;
-			}
+		if(passengerList.contains(passengerName)) {
+			return true;
 		}
-		
 		return false;
 		
 	}
 	//If passenger exists then remove the passenger else you notify them that the passenger doesn't exist
 	public void removePassenger(String passengerName) {
-		if(passengerExists(passengerName)) {
+		
+		String dummyName = passengerName.toLowerCase();
+		
+		if(passengerExists(dummyName)) {
 			
-			for(String passenger: listOfPassenger) {
-				if(passenger.equalsIgnoreCase(passengerName.trim())){
-					passenger = "";
-					
-				}
-				
-			}
+			passengerList.remove(dummyName);
+			
 			tickets++;
 			System.out.println("The passenger: "+ passengerName+ " was removed!");
 		}else {
